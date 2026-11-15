@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Display the DNS record type and destination of a domain's subdomains.
+
+print_record() {
+    local sub="$1"
+    dig "$sub.$2" | grep -A1 'ANSWER SECTION:' | tail -n1 | awk -v s="$sub" '{print "The subdomain " s " is a " $4 " record and points to " $5}'
+}
+
+if [ "$#" -eq 1 ]; then
+    for sub in www lb-01 web-01 web-02; do
+        print_record "$sub" "$1"
+    done
+else
+    print_record "$2" "$1"
+fi
